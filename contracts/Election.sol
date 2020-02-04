@@ -9,6 +9,8 @@ contract Election {
         string name;
         uint voteCount;
     }
+    //store accounts that have voted
+    mapping(address => bool) public voters;
     //store candidate
     //fetch candidate
     mapping(uint =>Candidate) public candidates; //mappingis an associative array r a ahsh associativee key value pairs with one another
@@ -29,8 +31,17 @@ contract Election {
         candidatesCount ++;
         candidates[candidatesCount] = Candidate({id: candidatesCount, name: _name, voteCount:0} );
     }
+    function vote (uint _candidateId) public {
+        //user haven't voted before
+        require(!voters[msg.sender],'User have voted before!!');
+        //valid candidate
+        require(_candidateId > 0 && _candidateId <= candidatesCount,'Invalid candidate');
+        voters[msg.sender] = true;
+        candidates[_candidateId].voteCount ++;
+    }
 }
 //Election.deployed().then(function(instance) { app = instance })
+//app.vote(1, { from: accounts[0] })
 /*pragma solidity >=0.4.22 <0.7.0;
 contract Ballot {
     struct Voter {
